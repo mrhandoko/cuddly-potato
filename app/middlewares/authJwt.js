@@ -1,20 +1,24 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth');
-const User = require('../models');
+const Models = require('../models');
 
 const verifyToken = async (req, res, next) => {
-  const token = req.headers['x-access-token'];
+  const token = req.headers.authorization;
 
   if (!token) {
     return res.status(403).send({
-      message: 'No token provided!'
+      statusCode: 401,
+      error: 'Bad Request',
+      message: 'Missing Authentication'
     });
   }
 
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({
-        message: 'Unauthorized!'
+        statusCode: 401,
+        error: 'Bad Request',
+        message: 'Unauthorized'
       });
     }
     req.userId = decoded.id;
@@ -23,8 +27,10 @@ const verifyToken = async (req, res, next) => {
 };
 
 const isStaff = async (req, res, next) => {
-  const user = await User.findByPk(req.userId);
-  const roles = await user.getRoles();
+  const roles = await Models.Role.findAll({
+    where: { id: req.userId }
+  });
+
   for (let i = 0; i < roles.length; i++) {
     if (roles[i].name === 'staff') {
       next();
@@ -38,8 +44,10 @@ const isStaff = async (req, res, next) => {
 };
 
 const isLead = async (req, res, next) => {
-  const user = await User.findByPk(req.userId);
-  const roles = await user.getRoles();
+  const roles = await Models.Role.findAll({
+    where: { id: req.userId }
+  });
+
   for (let i = 0; i < roles.length; i++) {
     if (roles[i].name === 'lead') {
       next();
@@ -52,11 +60,13 @@ const isLead = async (req, res, next) => {
   }
 };
 
-const isDirector = async (req, res, next) => {
-  const user = await User.findByPk(req.userId);
-  const roles = await user.getRoles();
+const isStaffOrLead = async (req, res, next) => {
+  const roles = await Models.Role.findAll({
+    where: { id: req.userId }
+  });
+
   for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name === 'director') {
+    if (roles[i].name === 'lead' || roles[i].name === 'lead') {
       next();
       return;
     }
@@ -67,9 +77,27 @@ const isDirector = async (req, res, next) => {
   }
 };
 
+const isDirector = async (req, res, next) => {
+  const roles = await Models.Role.findAll({
+    where: { id: req.userId }
+  });
+
+  for (let i = 0; i < roles.length; i++) {
+    if (roles[i].name === 'director') {
+      next();
+      return;
+    }
+
+    res.status(403).send({
+      message: 'Only director allowed'
+    });
+  }
+};
+
 module.exports = {
   verifyToken,
   isStaff,
   isLead,
+  isStaffOrLead,
   isDirector
 };

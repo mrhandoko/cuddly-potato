@@ -1,7 +1,7 @@
 module.exports = {
   HOST: 'localhost',
   USER: 'root',
-  PASSWORD: 'MaxxCorner#2390',
+  PASSWORD: '123456',
   DB: 'kredivo',
   dialect: 'mysql',
   pool: {

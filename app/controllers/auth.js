@@ -26,10 +26,18 @@ const signup = async (req, res) => {
       });
 
       await user.setRoles(roles);
-      res.send({ message: 'User was registered successfully!' });
+      res.send({
+        statusCode: 200,
+        success: true,
+        message: 'User was registered successfully!'
+      });
     } else {
       await user.setRoles([1]);
-      res.send({ message: 'User was registered successfully!' });
+      res.send({
+        statusCode: 200,
+        success: true,
+        message: 'User was registered successfully!'
+      });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -64,7 +72,7 @@ const signin = async (req, res) => {
     });
 
     const authorities = [];
-    const roles = user.getRoles();
+    const roles = await user.getRoles();
     for (let i = 0; i < roles.length; i++) {
       authorities.push(roles[i].name);
     }

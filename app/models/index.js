@@ -15,19 +15,14 @@ const sequelize = new Sequelize(
       min: config.pool.min,
       acquire: config.pool.acquire,
       idle: config.pool.idle
-    },
-    define: {
-      underscored: true,
-      freezeTableName: true,
-      timestamps: true
     }
   }
 );
 
-sequelize.sync();
-
 const User = require('./user')(sequelize, Sequelize);
 const Role = require('./role')(sequelize, Sequelize);
+const Customer = require('./customer')(sequelize, Sequelize);
+const Invoice = require('./invoice')(sequelize, Sequelize);
 
 Role.belongsToMany(User, {
   through: 'user_roles',
@@ -41,7 +36,37 @@ User.belongsToMany(Role, {
   otherKey: 'roleId'
 });
 
+Customer.hasMany(Invoice, { foreignKey: 'customerId' });
+Invoice.belongsTo(Customer, { foreignKey: 'customerId' });
+
+async function initial() {
+  try {
+    await Role.create({
+      id: 1,
+      name: 'staff'
+    });
+
+    await Role.create({
+      id: 2,
+      name: 'lead'
+    });
+
+    await Role.create({
+      id: 3,
+      name: 'director'
+    });
+  } catch (error) {
+    return error.message;
+  }
+}
+
+sequelize.sync()
+  .then(() => initial());
+
 module.exports = {
+  sequelize,
   User,
-  Role
+  Role,
+  Customer,
+  Invoice
 };
