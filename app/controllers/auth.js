@@ -26,21 +26,21 @@ const signup = async (req, res) => {
       });
 
       await user.setRoles(roles);
-      res.send({
+      res.json({
         statusCode: 200,
         success: true,
         message: 'User was registered successfully!'
       });
     } else {
       await user.setRoles([1]);
-      res.send({
+      res.json({
         statusCode: 200,
         success: true,
         message: 'User was registered successfully!'
       });
     }
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -53,7 +53,7 @@ const signin = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).send({ message: 'User Not found.' });
+      return res.status(404).json({ message: 'User Not found.' });
     }
 
     const passwordIsValid = bcrypt.compareSync(
@@ -62,7 +62,7 @@ const signin = async (req, res) => {
     );
 
     if (!passwordIsValid) {
-      return res.status(401).send({
+      return res.status(401).json({
         message: 'Invalid Password!'
       });
     }
@@ -77,15 +77,24 @@ const signin = async (req, res) => {
       authorities.push(roles[i].name);
     }
 
-    return res.status(200).send({
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      roles: authorities,
-      accessToken: token
+    return res.status(200).json({
+      statusCode: 200,
+      success: true,
+      data: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        roles: authorities,
+        accessToken: token
+      },
+      message: 'login success'
     });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(400).json({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Login failed'
+    });
   }
 };
 

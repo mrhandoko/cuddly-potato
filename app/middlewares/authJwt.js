@@ -66,13 +66,13 @@ const isStaffOrLead = async (req, res, next) => {
   });
 
   for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name === 'lead' || roles[i].name === 'lead') {
+    if (roles[i].name !== 'director') {
       next();
       return;
     }
 
     res.status(403).send({
-      message: 'Only lead allowed'
+      message: 'Only staff and lead allowed'
     });
   }
 };

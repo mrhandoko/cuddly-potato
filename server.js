@@ -4,11 +4,7 @@ const cors = require('cors');
 
 const app = express();
 
-const corsOptions = {
-  origin: 'http://localhost:8081'
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -22,6 +18,8 @@ app.use('/auth', Routes.auth);
 app.use('/customers', Routes.customer);
 app.use('/invoices', Routes.invoice);
 app.use('/reports', Routes.report);
+app.use('/roles', Routes.role);
+app.use('/user', Routes.user);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => true);
