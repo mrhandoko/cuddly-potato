@@ -21,5 +21,7 @@ app.use('/reports', Routes.report);
 app.use('/roles', Routes.role);
 app.use('/user', Routes.user);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || '8080';
+app.set('port', PORT);
+
 app.listen(PORT, () => true);
