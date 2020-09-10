@@ -14,6 +14,11 @@ app.get('/', (req, res) => {
 
 const Routes = require('./app/routes');
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 app.use('/auth', Routes.auth);
 app.use('/customers', Routes.customer);
 app.use('/invoices', Routes.invoice);
