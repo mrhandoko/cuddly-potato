@@ -1,12 +1,4 @@
 const DB = require('../models');
-// SELECT *
-// FROM invoices a
-// INNER JOIN customers
-// WHERE invoice_date = (
-//    SELECT MAX( invoice_date )
-//    FROM invoices b
-//    WHERE a.customer_id = b.customer_id
-// )
 
 const getAllReports = async (req, res) => {
   try {
