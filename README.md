@@ -40,6 +40,7 @@ const sequelize = new Sequelize(
   }
 );
 ...
+```
 
 ```
 1. Login
