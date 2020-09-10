@@ -2,20 +2,13 @@ const Sequelize = require('sequelize');
 const config = require('../config/db');
 
 const sequelize = new Sequelize(
-  config.DB,
-  config.USER,
-  config.PASSWORD,
+  config.heroku.DB,
+  config.heroku.USER,
+  config.heroku.PASSWORD,
   {
-    host: config.HOST,
+    host: config.heroku.HOST,
     dialect: 'mysql',
-    // operatorsAliases: 0,
-
-    // pool: {
-    //   max: config.pool.max,
-    //   min: config.pool.min,
-    //   acquire: config.pool.acquire,
-    //   idle: config.pool.idle
-    // }
+    operatorsAliases: 0
   }
 );
 
