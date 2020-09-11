@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
 };
 
 const isStaff = async (req, res, next) => {
-  const user = await Models.User.findAll({
+  const user = await Models.User.findOne({
     include: [Models.Role],
     where: { id: req.userId },
     raw: true
@@ -44,7 +44,7 @@ const isStaff = async (req, res, next) => {
 };
 
 const isLead = async (req, res, next) => {
-  const user = await Models.User.findAll({
+  const user = await Models.User.findOne({
     include: [Models.Role],
     where: { id: req.userId },
     raw: true
@@ -61,7 +61,7 @@ const isLead = async (req, res, next) => {
 };
 
 const isStaffOrLead = async (req, res, next) => {
-  const user = await Models.User.findAll({
+  const user = await Models.User.findOne({
     include: [Models.Role],
     where: { id: req.userId },
     raw: true
