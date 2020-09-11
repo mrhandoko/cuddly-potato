@@ -27,71 +27,71 @@ const verifyToken = async (req, res, next) => {
 };
 
 const isStaff = async (req, res, next) => {
-  const roles = await Models.Role.findAll({
-    where: { id: req.userId }
+  const user = await Models.User.findAll({
+    include: [Models.Role],
+    where: { id: req.userId },
+    raw: true
   });
 
-  for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name === 'staff') {
-      next();
-      return;
-    }
-
-    res.status(403).send({
-      message: 'Only staff allowed'
-    });
+  if (user['roles.name'] === 'staff') {
+    next();
+    return;
   }
+
+  res.status(403).send({
+    message: 'Only staff allowed'
+  });
 };
 
 const isLead = async (req, res, next) => {
-  const roles = await Models.Role.findAll({
-    where: { id: req.userId }
+  const user = await Models.User.findAll({
+    include: [Models.Role],
+    where: { id: req.userId },
+    raw: true
   });
 
-  for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name === 'lead') {
-      next();
-      return;
-    }
-
-    res.status(403).send({
-      message: 'Only lead allowed'
-    });
+  if (user['roles.name'] === 'lead') {
+    next();
+    return;
   }
+
+  res.status(403).send({
+    message: 'Only lead allowed'
+  });
 };
 
 const isStaffOrLead = async (req, res, next) => {
-  const roles = await Models.Role.findAll({
-    where: { id: req.userId }
+  const user = await Models.User.findAll({
+    include: [Models.Role],
+    where: { id: req.userId },
+    raw: true
   });
 
-  for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name !== 'director') {
-      next();
-      return;
-    }
-
-    res.status(403).send({
-      message: 'Only staff and lead allowed'
-    });
+  if (user['roles.name'] !== 'director') {
+    next();
+    return;
   }
+
+  res.status(403).send({
+    message: 'Only staff and lead allowed'
+  });
 };
 
 const isDirector = async (req, res, next) => {
-  const roles = await Models.Role.findAll({
-    where: { id: req.userId }
+  const user = await Models.User.findOne({
+    include: [Models.Role],
+    where: { id: req.userId },
+    raw: true
   });
 
-  for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name === 'director') {
-      next();
-      return;
-    }
-
-    res.status(403).send({
-      message: 'Only director allowed'
-    });
+  if (user['roles.name'] === 'director') {
+    next();
+    return;
   }
+
+  res.status(403).send({
+    message: 'Only director allowed'
+  });
 };
 
 module.exports = {
